@@ -19,55 +19,62 @@ const NAV_ITEMS = [
     to: "/dashboard",
     label: "Dashboard",
     icon: LayoutDashboard,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/intickets",
     label: "Inbound Tickets",
     icon: Ticket,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/outtickets",
     label: "Outbound Tickets",
     icon: Ticket,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/mytickets",
     label: "My Tickets",
     icon: Inbox,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/users",
     label: "Users",
     icon: Users,
-    // Admin-only: a USER shouldn't see or manage other accounts.
-    roles: ["ADMIN", "SUPER_ADMIN"],
+    roles: ["ADMIN"],
   },
   {
     to: "/client-groups",
     label: "Client Groups",
     icon: Building2,
-    roles: ["ADMIN", "SUPER_ADMIN"],
+    roles: ["ADMIN"],
+
   },
   {
     to: "/departments",
     label: "Departments",
     icon: Network,
-    roles: ["ADMIN", "SUPER_ADMIN"],
+    roles: ["ADMIN"],
   },
   {
     to: "/email-templates",
     label: "Email Templates",
     icon: Mail,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/tags",
     label: "Tags",
     icon: Tags,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/canned-responses",
     label: "Canned Responses",
     icon: MessageSquareText,
+    roles:["ADMIN", "USER"],
   },
   {
     to: "/error-logs",
@@ -91,7 +98,6 @@ const NAV_ITEMS = [
 export default function Sidebar({ onNavigate }) {
   const { user } = useAuth();
 
-  // No "roles" key on an item = visible to everyone.
   const visibleItems = NAV_ITEMS.filter(
     (item) => !item.roles || item.roles.includes(user?.role)
   );
@@ -173,7 +179,7 @@ export default function Sidebar({ onNavigate }) {
       </nav>
 
       {/* Footer */}
-      <div className="shrink-0 border-t border-slate-200 px-4 py-3">
+      {/* <div className="shrink-0 border-t border-slate-200 px-4 py-3">
         <p className="text-xs font-medium text-slate-500">
           Helpdesk Platform
         </p>
@@ -181,7 +187,7 @@ export default function Sidebar({ onNavigate }) {
         <p className="mt-0.5 text-[11px] text-slate-400">
           Version 0.1
         </p>
-      </div>
+      </div> */}
     </aside>
   );
 }

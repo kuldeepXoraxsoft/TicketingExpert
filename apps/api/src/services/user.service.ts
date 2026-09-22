@@ -1,7 +1,6 @@
 import bcrypt from "bcryptjs";
 
 import { prisma } from "../lib/prisma";
-import { writeAuditLog } from "./audit.service";
 
 type ListUsersParams = {
   page?: number;
@@ -162,17 +161,7 @@ export async function createUserInOrganization(params: {
     },
   });
 
-  await writeAuditLog({
-    organizationId: params.organizationId,
-    userId: params.actingUserId,
-    entityType: "User",
-    entityId: user.id,
-    action: "USER_CREATED",
-    metadata: {
-      role: user.role,
-      departmentId: user.departmentId,
-    },
-  });
+
 
   return user;
 }
@@ -291,19 +280,7 @@ export async function updateUser(params: {
     },
   });
 
-  await writeAuditLog({
-    organizationId: params.organizationId,
-    userId: params.actingUserId,
-    entityType: "User",
-    entityId: user.id,
-    action: "USER_UPDATED",
-
-    metadata: {
-      role: user.role,
-      departmentId: user.departmentId,
-      status: user.status,
-    },
-  });
+ 
 
   return user;
 }

@@ -1,6 +1,5 @@
 import { prisma } from "../lib/prisma";
 import { generateTicketNumber } from "../utils/ticketNumber";
-import { writeAuditLog } from "./audit.service";
 
 export interface RequestingUser {
   userId: string;
@@ -115,25 +114,7 @@ export async function createTicket(input: CreateTicketInput) {
     },
   });
 
-  await writeAuditLog({
-    organizationId: requestedBy.organizationId,
-
-    userId: requestedBy.userId,
-
-    entityType: "Ticket",
-
-    entityId: ticket.id,
-
-    action: "TICKET_CREATED",
-
-    metadata: {
-      ticketNumber: ticket.ticketNumber,
-
-      source: ticket.source,
-
-      departmentId,
-    },
-  });
+ 
 
   return ticket;
 }
@@ -152,6 +133,8 @@ export async function listTickets(params: {
   page?: number;
 
   pageSize?: number;
+
+  direction?: string;
 }) {
   const { requestedBy } = params;
 
@@ -189,6 +172,11 @@ export async function listTickets(params: {
           assignedToId: params.assignedToId,
         }
       : {}),
+      ...(params.direction 
+       ? {
+         direction: params.direction,
+       } : {}
+      ),
 
     ...(search
       ? {
@@ -390,19 +378,7 @@ export async function addTicketMessage(params: {
     }
   }
 
-  await writeAuditLog({
-    organizationId: requestedBy.organizationId,
-    userId: requestedBy.userId,
-    entityType: "Ticket",
-    entityId: params.ticketId,
-    action: params.isInternal
-      ? "INTERNAL_NOTE_ADDED"
-      : "MESSAGE_ADDED",
-    metadata: {
-      direction: params.direction,
-      source: params.source,
-    },
-  });
+
 
   return message;
 }
@@ -490,19 +466,7 @@ export async function updateTicketStatusOrAssignment(params: {
     },
   });
 
-  await writeAuditLog({
-    organizationId: requestedBy.organizationId,
-    userId: requestedBy.userId,
-    entityType: "Ticket",
-    entityId: params.ticketId,
-    action: "TICKET_UPDATED",
-    metadata: {
-      status: params.status,
-      priority: params.priority,
-      assignedToId: params.assignedToId,
-      departmentId,
-    },
-  });
+ 
 
   return updated;
 }

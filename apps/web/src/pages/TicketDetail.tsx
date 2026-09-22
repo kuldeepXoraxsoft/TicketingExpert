@@ -394,6 +394,20 @@ export default function TicketDetail() {
                     {new Date(ticket.createdAt).toLocaleString()}
                   </p>
                 </div>
+                 <div>
+                  <p className="text-xs text-slate-400">Resolved</p>
+
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {new Date(ticket.resolvedAt).toLocaleString()}
+                  </p>
+                </div>
+                 <div>
+                  <p className="text-xs text-slate-400">Closed</p>
+
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {new Date(ticket.closedAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
             </div>
 

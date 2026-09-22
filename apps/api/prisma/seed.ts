@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
-// Edit these before running, or leave as-is for a quick test login.
 const SEED = {
   organizationName: "Acme",
   adminName: "Kuldeep",

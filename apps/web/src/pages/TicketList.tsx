@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowUpRight,
+  Edit3,
   PenIcon,
   Plus,
   Ticket as TicketIcon,
@@ -15,6 +16,11 @@ import DataTable, { DataTableColumn } from "../components/ui/Datatable";
 import useDebounce from "../hooks/useDebounce";
 import SearchInput from "../components/ui/SearchInput";
 import AssignTicketModal from "../components/tickets/AssignTicketModal";
+import Select from "../components/ui/Select";
+import StatusModal from "../components/tickets/StatusModal";
+import Badge from "../components/ui/Badge";
+import Button from "../components/ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 25;
 
@@ -24,47 +30,47 @@ const STATUS_CONFIG: Record<
     label: string;
     className: string;
   }
-> = {
-  OPEN: {
-    label: "Open",
-    className: "bg-blue-50 text-blue-700 border-blue-100",
-  },
+  > = {
+    OPEN: {
+      label: "Open",
+      className: "bg-blue-50 text-blue-700 border-blue-100",
+    },
 
-  ON_HOLD: {
-    label: "On hold",
-    className: "bg-amber-50 text-amber-700 border-amber-100",
-  },
+    ON_HOLD: {
+      label: "On hold",
+      className: "bg-amber-50 text-amber-700 border-amber-100",
+    },
 
-  FOLLOWING_UP: {
-    label: "Following up",
-    className: "bg-violet-50 text-violet-700 border-violet-100",
-  },
+    FOLLOWING_UP: {
+      label: "Following up",
+      className: "bg-violet-50 text-violet-700 border-violet-100",
+    },
 
-  IN_PROGRESS: {
-    label: "In progress",
-    className: "bg-purple-50 text-purple-700 border-purple-100",
-  },
+    IN_PROGRESS: {
+      label: "In progress",
+      className: "bg-purple-50 text-purple-700 border-purple-100",
+    },
 
-  ANSWERED: {
-    label: "Answered",
-    className: "bg-cyan-50 text-cyan-700 border-cyan-100",
-  },
+    ANSWERED: {
+      label: "Answered",
+      className: "bg-cyan-50 text-cyan-700 border-cyan-100",
+    },
 
-  AWAITING: {
-    label: "Awaiting",
-    className: "bg-slate-50 text-slate-600 border-slate-200",
-  },
+    AWAITING: {
+      label: "Awaiting",
+      className: "bg-slate-50 text-slate-600 border-slate-200",
+    },
 
-  RESOLVED: {
-    label: "Resolved",
-    className: "bg-emerald-50 text-emerald-700 border-emerald-100",
-  },
+    RESOLVED: {
+      label: "Resolved",
+      className: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    },
 
-  CLOSED: {
-    label: "Closed",
-    className: "bg-slate-100 text-slate-500 border-slate-200",
-  },
-};
+    CLOSED: {
+      label: "Closed",
+      className: "bg-slate-100 text-slate-500 border-slate-200",
+    },
+  };
 
 const PRIORITY_CONFIG: Record<string, string> = {
   CRITICAL: "text-red-600",
@@ -80,9 +86,7 @@ function StatusBadge({ status }: { status: string }) {
   };
 
   return (
-    <span
-      className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${config.className}`}
-    >
+    <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${config.className}`}>
       {config.label}
     </span>
   );
@@ -103,16 +107,20 @@ function Priority({ priority }: { priority: string }) {
 export default function TicketList() {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
+  const [direction, setDirection] = useState("") 
 
   const [page, setPage] = useState(1);
   const [totalTickets, setTotalTickets] = useState(0);
   const [error, setError] = useState("");
 
   const [assignOpen, setAssignOpen] = useState(false);
+  const [statusOpen, setStatusOpen] = useState(false);
+  const [statusTicket, setStatusTicket] = useState<Ticket | null>(null);
   const [selectedTicket, setSelectedTicket] =
     useState<Ticket | null>(null);
 
@@ -137,6 +145,9 @@ export default function TicketList() {
       if (requestedSearch.trim()) {
         params.search = requestedSearch.trim();
       }
+      if (direction) {
+         params.direction = direction;
+      }
 
       const response = await api.get("/tickets", { params });
 
@@ -160,7 +171,7 @@ export default function TicketList() {
     setPage(1);
 
     loadTickets(1, statusFilter, debouncedSearch);
-  }, [statusFilter, debouncedSearch]);
+  }, [statusFilter, debouncedSearch, direction]);
 
   useEffect(() => {
     if (page === 1) return;
@@ -247,8 +258,26 @@ const columns: DataTableColumn<Ticket>[] = [
   {
     key: "status",
     header: "Status",
+    className: "whitespace-nowrap",
     render: (ticket) => (
-      <StatusBadge status={ticket.status} />
+      <div className="flex items-center justify-end gap-1">
+        <StatusBadge status={ticket.status} />
+
+        <button
+          type="button"
+          onClick={(event) => {
+            event.stopPropagation();
+
+            setStatusTicket(ticket);
+            setStatusOpen(true);
+          }}
+          className="inline-flex transform-capitalize shrink-0 rounded-md p-1.5 text-blue-500 transition hover:bg-slate-100 hover:text-blue-600"
+          title="Update status"
+          aria-label={`Update status for ${ticket.ticketNumber}`}
+        >
+          <Edit3 size={14} />
+        </button>
+      </div>
     ),
   },
 
@@ -261,12 +290,12 @@ const columns: DataTableColumn<Ticket>[] = [
   },
 
   {
-    key: "department",
-    header: "Department",
+    key: "direction",
+    header: "Direction",
     className: "whitespace-nowrap text-slate-700",
     render: (ticket) => (
         <span>
-          {ticket.department?.name ?? "Unassigned"}
+          <Badge variant="success" >{ticket.direction}</Badge>
         </span>
     ),
   },
@@ -338,7 +367,7 @@ const columns: DataTableColumn<Ticket>[] = [
         {/* Header */}
         <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           {/* Left */}
-          <div>
+          <div className="flex-1">
             <p className="text-sm text-slate-500">
               Support workspace
             </p>
@@ -352,26 +381,47 @@ const columns: DataTableColumn<Ticket>[] = [
             </p>
           </div>
 
-          {/* Right */}
-          <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-            {/* Search */}
-            <SearchInput
-              value={search}
-              onValueChange={setSearch}
-              placeholder="Search tickets..."
-              className="w-full sm:w-64"
-            />
+  {/* Right */}
+  <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+    {/* Ticket Direction */}
+    <div className="w-full sm:w-44">
+      <Select
+        aria-label="Select Ticket Direction"
+        options={[
+          {
+            value: "",
+            label: "All Directions",
+          },
+          {
+            value: "INBOUND",
+            label: "Inbound",
+          },
+          {
+            value: "OUTBOUND",
+            label: "Outbound",
+          },
+        ]}
+        onChange= {(e)=>setDirection(e.target.value)}
+      />
+    </div>
 
-            {/* New ticket */}
-            <Link
-              to="/tickets/new"
-              className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800"
-            >
-              <Plus size={16} />
-              New ticket
-            </Link>
-          </div>
-        </div>
+    {/* Search */}
+    <SearchInput
+      value={search}
+      onValueChange={setSearch}
+      placeholder="Search tickets..."
+      className="w-full sm:w-64"
+    />
+
+    {/* New Ticket */}
+    <Button
+    onClick={()=>navigate("/tickets/new")}
+    >
+      <Plus size={16} />
+      New ticket
+    </Button>
+  </div>
+</div>
 
         {/* Status Tabs */}
         <div className="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -422,11 +472,24 @@ const columns: DataTableColumn<Ticket>[] = [
             setSelectedTicket(null);
           }}
           onSuccess={() => {
-            /*
-             * Modal closes itself.
-             * We only need to refresh the current page.
-             */
             loadTickets(
+              page,
+              statusFilter,
+              debouncedSearch,
+            );
+          }}
+        />
+        <StatusModal
+          open={statusOpen}
+          ticketId={statusTicket?.id ?? ""}
+          currentStatus={statusTicket?.status ?? "OPEN"}
+          currentPriority={statusTicket?.priority ?? "MEDIUM"}
+          onClose={() => {
+            setStatusOpen(false);
+            setStatusTicket(null);
+          }}
+          onSuccess={() => {
+            return loadTickets(
               page,
               statusFilter,
               debouncedSearch,

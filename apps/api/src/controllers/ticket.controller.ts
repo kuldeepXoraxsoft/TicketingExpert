@@ -66,6 +66,10 @@ const listTicketsQuerySchema = z.object({
   departmentId: z.string().uuid().optional(),
 
   search: z.string().trim().optional(),
+
+  direction: z
+    .enum(["INBOUND", "OUTBOUND"])
+    .optional(),
 });
 
 export async function listTicketsHandler(req: Request, res: Response) {
@@ -85,6 +89,8 @@ export async function listTicketsHandler(req: Request, res: Response) {
     page: query.page,
 
     pageSize: query.pageSize,
+
+    direction: query.direction,
   });
 
   res.json(result);

@@ -59,6 +59,11 @@ enum MessageDirection {
   OUTBOUND
 }
 
+enum TicketDirection {
+  INBOUND
+  OUTBOUND
+}
+
 enum MessageSource {
   EMAIL
   PLATFORM
@@ -83,7 +88,6 @@ model Organization {
   departments Department[]
   mailboxes   Mailbox[]
   tickets     Ticket[]
-  auditLogs   AuditLog[]
 
   @@map("organizations")
 }
@@ -105,7 +109,6 @@ model User {
 
   assignedTickets Ticket[]       @relation("AssignedAgent")
   ticketMessages  TicketMessage[] @relation("MessageAuthor")
-  auditLogs       AuditLog[]
 
   @@index([organizationId])
   @@map("users")
@@ -156,6 +159,7 @@ model Ticket {
   subject        String
   requesterEmail String
   requesterName  String?
+  direction      TicketDirection @default(INBOUND)
   status         TicketStatus   @default(OPEN)
   priority       TicketPriority @default(MEDIUM)
   assignedToId   String?
@@ -227,22 +231,7 @@ model Attachment {
   @@map("attachments")
 }
 
-model AuditLog {
-  id             String   @id @default(uuid())
-  organizationId String
-  userId         String?
-  entityType     String
-  entityId       String
-  action         String
-  metadata       Json?
-  createdAt      DateTime @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  user         User?        @relation(fields: [userId], references: [id])
-
-  @@index([organizationId, entityType, entityId])
-  @@map("audit_logs")
-}
 
 model EmailTemplate {
   id           String     @id @default(uuid())

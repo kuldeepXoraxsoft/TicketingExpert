@@ -366,15 +366,6 @@ async function loadUsers(
       render: (user) => {
         const userWithDepartment =
           user as OrgUserWithDepartment;
-
-        if (user.role === "ADMIN") {
-          return (
-            <span className="text-xs text-slate-400">
-              — admin —
-            </span>
-          );
-        }
-
         if (userWithDepartment.department?.name) {
           return (
             <div className="flex items-center gap-2">

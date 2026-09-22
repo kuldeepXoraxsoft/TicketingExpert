@@ -8,7 +8,6 @@ export function errorHandler(err: any, req: Request, res: Response, _next: NextF
 
   const status = err.status ?? 500;
   if (status >= 500) {
-    // eslint-disable-next-line no-console
     console.error(err);
   }
 

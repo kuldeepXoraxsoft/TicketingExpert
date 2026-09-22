@@ -25,6 +25,7 @@ import DataTable, {
 } from "../components/ui/Datatable";
 
 import useDebounce from "../hooks/useDebounce";
+import { useNavigate } from "react-router-dom";
 
 const PAGE_SIZE = 25;
 
@@ -44,7 +45,7 @@ function EmailStatus({
 
 export default function Departments() {
   const { user } = useAuth();
-
+  const navigate = useNavigate();
   const isAdmin = user?.role === "ADMIN";
 
   const [departments, setDepartments] =
@@ -224,9 +225,7 @@ export default function Departments() {
     [
       {
         key: "department",
-
         header: "Department",
-
         render: (department) => (
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100">
@@ -247,9 +246,7 @@ export default function Departments() {
 
       {
         key: "email",
-
         header: "Email",
-
         render: (department) => (
           <div className="flex items-center gap-2 text-slate-600">
             <Mail
@@ -267,9 +264,7 @@ export default function Departments() {
 
       {
         key: "smtp",
-
         header: "SMTP Status",
-
         render: () => (
           <EmailStatus active />
         ),
@@ -277,9 +272,7 @@ export default function Departments() {
 
       {
         key: "imap",
-
         header: "IMAP Status",
-
         render: () => (
           <EmailStatus active />
         ),
@@ -307,9 +300,7 @@ export default function Departments() {
 
       {
         key: "tickets",
-
         header: "Tickets",
-
         render: (department) => (
           <div className="flex items-center gap-2 text-slate-600">
             <Ticket
@@ -327,13 +318,9 @@ export default function Departments() {
 
       {
         key: "actions",
-
         header: "Actions",
-
         headerClassName: "text-right",
-
         className: "text-right",
-
         render: () => (
           <div className="flex items-center justify-end gap-1">
             <button
@@ -348,6 +335,7 @@ export default function Departments() {
               type="button"
               className="inline-flex rounded-md p-1.5 text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
               title="View department"
+              onClick={() => navigate("/settings")}
             >
               <ArrowUpRight size={17} />
             </button>

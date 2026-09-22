@@ -1,5 +1,4 @@
 import { prisma } from "../lib/prisma";
-import { writeAuditLog } from "./audit.service";
 
 export async function listDepartments(params: {
   organizationId: string;
@@ -48,6 +47,25 @@ export async function listDepartments(params: {
             tickets: true,
           },
         },
+
+        users: {
+          where: {
+            role: "ADMIN",
+            status: "ACTIVE",
+          },
+
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            status: true,
+          },
+
+          orderBy: {
+            name: "asc",
+          },
+        },
       },
     }),
 
@@ -82,22 +100,21 @@ export async function createDepartment(params: {
           tickets: true,
         },
       },
-    },
-  });
 
-  await writeAuditLog({
-    organizationId: params.organizationId,
+      users: {
+        where: {
+          role: "ADMIN",
+          status: "ACTIVE",
+        },
 
-    userId: params.actingUserId,
-
-    entityType: "Department",
-
-    entityId: department.id,
-
-    action: "DEPARTMENT_CREATED",
-
-    metadata: {
-      name: department.name,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          status: true,
+        },
+      },
     },
   });
 

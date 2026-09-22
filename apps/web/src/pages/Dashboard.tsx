@@ -10,6 +10,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import Button from "../components/ui/Button";
 
 const stats = [
   {
@@ -285,10 +286,12 @@ export default function Dashboard() {
             </p>
           </div>
 
-          <button className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-slate-900 px-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800">
-            <Plus size={17} />
-            New Ticket
-          </button>
+         <Button
+             onClick={()=>navigate("/tickets/new")}
+             >
+               <Plus size={16} />
+               New ticket
+             </Button>
         </div>
 
         {/* Stats */}

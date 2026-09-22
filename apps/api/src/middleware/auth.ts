@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma";
 export interface RequestAuth {
   userId: string;
   organizationId: string;
-  role: "ADMIN" | "USER";
+  role: "SUPER_ADMIN" | "ADMIN" | "USER";
   departmentId: string | null;
 }
 
@@ -38,7 +38,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
     req.auth = {
       userId: user.id,
       organizationId: user.organizationId,
-      role: user.role as "ADMIN" | "USER",
+      role: user.role as "SUPER_ADMIN" | "ADMIN" | "USER",
       departmentId: user.departmentId,
     };
     next();
@@ -47,7 +47,7 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   }
 }
 
-export function requireRole(...roles: Array<"ADMIN" | "USER">) {
+export function requireRole(...roles: Array<"SUPER_ADMIN" | "ADMIN" | "USER">) {
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.auth || !roles.includes(req.auth.role)) {
       return res.status(403).json({ error: "Insufficient permissions" });
