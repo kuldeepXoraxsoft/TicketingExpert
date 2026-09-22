@@ -16,7 +16,7 @@ import DataTable, {
   DataTableColumn,
 } from "../components/ui/Datatable";
 import Modal from "../components/ui/Modal";
-import Input from "../components/ui/Input";
+import Input from "../components/ui/input";
 import Select from "../components/ui/Select";
 import Button from "../components/ui/Button";
 import { formatDateTime } from "../utils/formatDateTime";
@@ -486,7 +486,7 @@ async function loadUsers(
           page={page}
           pageSize={PAGE_SIZE}
           total={totalUsers}
-          onPageChange={(nextPage) => {s
+          onPageChange={(nextPage) => {
             setPage(nextPage);
             loadUsers(nextPage);
           }}
