@@ -17,7 +17,7 @@ import NewTicket from "./pages/NewTicket";
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
 
       <Route element={<ProtectedRoute />}>
         <Route element={<Layout />}>
