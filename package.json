@@ -1,0 +1,16 @@
+{
+  "name": "helpdesk-platform",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:api": "pnpm --filter @helpdesk/api dev",
+    "dev:worker": "pnpm --filter @helpdesk/worker dev",
+    "dev:web": "pnpm --filter @helpdesk/web dev",
+    "prisma:generate": "pnpm --filter @helpdesk/api prisma:generate",
+    "prisma:migrate": "pnpm --filter @helpdesk/api prisma:migrate",
+    "build": "pnpm -r build"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
