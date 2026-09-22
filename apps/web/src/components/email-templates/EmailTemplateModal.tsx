@@ -72,7 +72,6 @@ export default function EmailTemplateModal({
 
   const isAdmin =
     user?.role === "ADMIN" ||
-    user?.role === "SUPER_ADMIN";
 
   useEffect(() => {
     if (!open) return;

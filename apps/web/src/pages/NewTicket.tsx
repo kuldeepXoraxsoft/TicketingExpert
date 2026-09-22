@@ -65,8 +65,7 @@ export default function NewTicket() {
       // USER normally only needs their department.
       // ADMIN/SUPER_ADMIN can see departments.
       if (
-        user?.role === "ADMIN" ||
-        user?.role === "SUPER_ADMIN"
+        user?.role === "ADMIN"
       ) {
         requests.push(
           api.get("/departments", {

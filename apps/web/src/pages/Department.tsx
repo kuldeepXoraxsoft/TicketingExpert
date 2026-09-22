@@ -243,25 +243,6 @@ export default function Departments() {
           </div>
         ),
       },
-
-      {
-        key: "email",
-        header: "Email",
-        render: (department) => (
-          <div className="flex items-center gap-2 text-slate-600">
-            <Mail
-              size={15}
-              className="shrink-0 text-slate-400"
-            />
-
-            <span className="max-w-[240px] truncate font-medium">
-              {department.email ??
-                "organization@gmail.com"}
-            </span>
-          </div>
-        ),
-      },
-
       {
         key: "smtp",
         header: "SMTP Status",

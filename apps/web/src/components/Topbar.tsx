@@ -3,7 +3,11 @@ import { Menu, Search } from "lucide-react";
 import NotificationBell from "./NotificationBell";
 import UserMenu from "./UserMenu";
 
-export default function Topbar({ onMenuClick }) {
+type TopbarProps = {
+  onMenuClick?: () => void;
+};
+
+export default function Topbar({ onMenuClick }: TopbarProps) {
   const [changePasswordOpen, setChangePasswordOpen] = useState(false); 
 
   return (

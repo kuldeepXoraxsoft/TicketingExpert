@@ -14,6 +14,10 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
+type SidebarProps = {
+  onNavigate?: () => void;
+};
+
 const NAV_ITEMS = [
   {
     to: "/dashboard",
@@ -95,12 +99,12 @@ const NAV_ITEMS = [
   }
 ];
 
-export default function Sidebar({ onNavigate }) {
+export default function Sidebar({ onNavigate }: SidebarProps) {
   const { user } = useAuth();
 
-  const visibleItems = NAV_ITEMS.filter(
-    (item) => !item.roles || item.roles.includes(user?.role)
-  );
+ const visibleItems = NAV_ITEMS.filter(
+  (item) => !item.roles || (user?.role && item.roles.includes(user.role))
+);
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-slate-200 bg-white">

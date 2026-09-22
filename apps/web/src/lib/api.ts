@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? "http://localhost:4000/api",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 api.interceptors.request.use((config) => {
@@ -48,8 +48,11 @@ export interface Ticket {
   priority: string;
   requesterEmail: string;
   requesterName?: string;
+  direction?: string;
   createdAt: string;
   updatedAt: string;
+  closedAt: string;
+  resolvedAt: string;
   assignedTo?: { id: string; name: string } | null;
   department?: { id: string; name: string } | null;
 }

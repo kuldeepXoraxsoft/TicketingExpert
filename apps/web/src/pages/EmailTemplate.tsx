@@ -79,8 +79,7 @@ export default function EmailTemplates() {
   const [error, setError] = useState("");
 
   const isAdmin =
-    user?.role === "ADMIN" ||
-    user?.role === "SUPER_ADMIN";
+    user?.role === "ADMIN"
 
   async function loadDepartments() {
     try {

@@ -88,7 +88,7 @@ export async function processIncomingEmail(job: Job<IncomingEmailJob>) {
       subject: data.subject,
       requesterEmail: data.fromEmail,
       requesterName: data.fromName,
-      status: " OPEN",
+      status: "OPEN",
       priority: "MEDIUM",
       source: "EMAIL",
       messages: {
